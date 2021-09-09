@@ -68,7 +68,8 @@ const MAP_TENS = {
   팔십: 80,
   구십: 90,
 };
-export {
+
+module.exports = {
   SINO_MAP_ONES,
   SINO_MAP_SMALL,
   SINO_MAP_LARGE,

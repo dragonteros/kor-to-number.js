@@ -1,5 +1,5 @@
-import assert from "assert";
-import { extractNumber } from "../src/index.js";
+const assert = require("assert");
+const { extractNumber } = require("../src/index.js");
 
 function assertNumber(original, expected) {
   assert.deepStrictEqual(extractNumber(original), expected);
@@ -385,11 +385,11 @@ describe("부호", function () {
     assertNumber("3점", [3, "점"]);
     assertNumber("삼.", [3, "."]);
     assertNumber("삼점", [3, "점"]);
-  
+
     assertNumber("점5", [NaN, "점5"]);
     assertNumber(".오", [NaN, ".오"]);
     assertNumber("점오", [0.5, ""]);
-  
+
     assertNumber("영점3", [0, "점3"]);
     assertNumber("영.사", [0, ".사"]);
     assertNumber("영.7", [0, ".7"]);

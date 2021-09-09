@@ -1,10 +1,10 @@
-import {
+const {
   SINO_MAP_ONES,
   SINO_MAP_SMALL,
   SINO_MAP_LARGE,
   NATIVE_MAP_ONES,
   MAP_TENS,
-} from "./constants.js";
+} = require("./constants.js");
 
 function extractUnion(extractors) {
   return function (word) {
@@ -86,7 +86,7 @@ function extractInGroup(
 
 function extractSign(f) {
   return function (word) {
-    const _ = ([num, rest]) => ([num, isNaN(num)? word: rest])
+    const _ = ([num, rest]) => [num, isNaN(num) ? word : rest];
     const neg = ([num, rest]) => [-num, rest];
     if (word.slice(0, 3) === "플러스") return _(f(word.slice(3).trim()));
     if (word.slice(0, 4) === "마이너스") return _(neg(f(word.slice(4).trim())));
@@ -192,4 +192,4 @@ function extractNumber(word) {
   return [parsed, rest.trim()];
 }
 
-export { extractNumber };
+module.exports = { extractNumber };
