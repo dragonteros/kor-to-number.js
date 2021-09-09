@@ -1,6 +1,6 @@
 {
   "name": "kor-to-number",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "한글로 적힌 한국어 수사를 숫자로 변환하는 자바스크립트 라이브러리",
   "main": "src/index.js",
   "scripts": {
@@ -27,5 +27,7 @@
     "한국어",
     "한글",
     "숫자"
-  ]
+  ],
+  "files": ["src/*"],
+  "sideEffects": false
 }
