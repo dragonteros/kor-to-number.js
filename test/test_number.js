@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { extractNumber } = require("../src/index.js");
+const { extractNumber } = require("../dist/kor-to-number.js");
 
 function assertNumber(original, expected) {
   assert.deepStrictEqual(extractNumber(original), expected);
@@ -257,6 +257,7 @@ describe("한글", function () {
     assertNumber("스물세시", [23, "시"]);
     assertNumber("일만이천세 곳", [12003, "곳"]);
     assertNumber("너 푼", [4, "푼"]);
+    assertNumber("엿 냥", [6, "냥"]);
     assertNumber("만이천삼백서른넉냥", [12334, "냥"]);
     assertNumber("만이천삼백마흔네대", [12344, "대"]);
     assertNumber("만이천삼백아흔닷돈", [12395, "돈"]);
@@ -299,6 +300,7 @@ describe("한글", function () {
 describe("부호", function () {
   it("마이너스", function () {
     assertNumber("-2", [-2, ""]);
+    assertNumber("- 2", [NaN, "- 2"]);
     assertNumber("-이", [NaN, "-이"]);
     assertNumber("-20", [-20, ""]);
     assertNumber("-2십", [-20, ""]);
@@ -314,6 +316,7 @@ describe("부호", function () {
     assertNumber("-이십2", [NaN, "-이십2"]);
     assertNumber("-이십이", [NaN, "-이십이"]);
     assertNumber("-서른", [NaN, "-서른"]);
+    assertNumber("마이너스", [NaN, "마이너스"]);
     assertNumber("마이너스 이십", [-20, ""]);
     assertNumber("마이너스 하나", [NaN, "마이너스 하나"]);
     assertNumber("마이너스 이십삼십", [-23, "십"]);
@@ -331,6 +334,7 @@ describe("부호", function () {
 
   it("플러스", function () {
     assertNumber("+2", [+2, ""]);
+    assertNumber("+ 2", [NaN, "+ 2"]);
     assertNumber("+이", [NaN, "+이"]);
     assertNumber("+20", [+20, ""]);
     assertNumber("+2십", [+20, ""]);
@@ -346,6 +350,7 @@ describe("부호", function () {
     assertNumber("+이십2", [NaN, "+이십2"]);
     assertNumber("+이십이", [NaN, "+이십이"]);
     assertNumber("+서른", [NaN, "+서른"]);
+    assertNumber("플러스", [NaN, "플러스"]);
     assertNumber("플러스 이십", [+20, ""]);
     assertNumber("플러스 하나", [NaN, "플러스 하나"]);
     assertNumber("플러스 이십삼십", [+23, "십"]);
@@ -396,5 +401,30 @@ describe("부호", function () {
     assertNumber("3점오", [3, "점오"]);
     assertNumber("3점4", [3, "점4"]);
     assertNumber("3.오", [3.0, "오"]);
+  });
+
+  it("띄어쓰기", function () {
+    assertNumber("2 5", [2, "5"]);
+    assertNumber("25", [25, ""]);
+    assertNumber("20 5", [20, "5"]);
+    assertNumber("2 05", [2, "05"]);
+    assertNumber("20만 5000", [205000, ""]);
+    assertNumber("20만5000", [205000, ""]);
+    assertNumber("2만 5000", [25000, ""]);
+    assertNumber("2만5000", [25000, ""]);
+    assertNumber("2만 5천", [25000, ""]);
+    assertNumber("2만5천", [25000, ""]);
+    assertNumber("2 만 5 천", [2, "만 5 천"]);
+    assertNumber("2천 5백", [2000, "5백"]);
+    assertNumber("2천5백", [2500, ""]);
+    assertNumber("2 천5백", [2, "천5백"]);
+    assertNumber("이십만 오천", [205000, ""]);
+    assertNumber("이십만오천", [205000, ""]);
+    assertNumber("이만 오천", [25000, ""]);
+    assertNumber("이만오천", [25000, ""]);
+    assertNumber("이 만 오 천", [2, "만 오 천"]);
+    assertNumber("이천 오백", [2000, "오백"]);
+    assertNumber("이천오백", [2500, ""]);
+    assertNumber("이 천오백", [2, "천오백"]);
   });
 });

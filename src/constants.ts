@@ -1,4 +1,8 @@
-const SINO_MAP_ONES = {
+type MAP_TYPE = {
+  [key: string]: number;
+};
+type ORDERED_MAP_TYPE = [string, number][];
+const SINO_MAP_ONES: MAP_TYPE = {
   일: 1,
   이: 2,
   삼: 3,
@@ -10,21 +14,21 @@ const SINO_MAP_ONES = {
   팔: 8,
   구: 9,
 };
-const SINO_MAP_SMALL = {
-  십: 10,
-  백: 100,
-  천: 1000,
-};
-const SINO_MAP_LARGE = {
-  만: 1e4,
-  억: 1e8,
-  조: 1e12,
-  경: 1e16,
-  해: 1e20,
-  자: 1e24,
-  양: 1e28,
-};
-const NATIVE_MAP_ONES = {
+const SINO_MAP_SMALL: ORDERED_MAP_TYPE = [
+  ["천", 1000],
+  ["백", 100],
+  ["십", 10],
+];
+const SINO_MAP_LARGE: ORDERED_MAP_TYPE = [
+  ["양", 1e28],
+  ["자", 1e24],
+  ["해", 1e20],
+  ["경", 1e16],
+  ["조", 1e12],
+  ["억", 1e8],
+  ["만", 1e4],
+];
+const NATIVE_MAP_ONES: MAP_TYPE = {
   하나: 1,
   둘: 2,
   셋: 3,
@@ -42,11 +46,10 @@ const NATIVE_MAP_ONES = {
   네: 4,
   넉: 4,
   너: 4,
-  네: 4,
   닷: 5,
   엿: 6,
 };
-const MAP_TENS = {
+const MAP_TENS: MAP_TYPE = {
   열: 10,
   스물: 20,
   서른: 30,
@@ -69,7 +72,9 @@ const MAP_TENS = {
   구십: 90,
 };
 
-module.exports = {
+export {
+  MAP_TYPE,
+  ORDERED_MAP_TYPE,
   SINO_MAP_ONES,
   SINO_MAP_SMALL,
   SINO_MAP_LARGE,

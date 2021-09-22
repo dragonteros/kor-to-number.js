@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["esnext"],
+    "outDir": "./dist",
+    "noEmit": true,
+
+    "strict": true,
+
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "isolatedModules": false,
+    "forceConsistentCasingInFileNames": true,
+
+    "newLine": "lf"
+  },
+  "include": ["src"]
+}
