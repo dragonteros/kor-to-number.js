@@ -9,7 +9,7 @@
   "scripts": {
     "build": "microbundle",
     "dev": "microbundle watch",
-    "test": "tsc; mocha"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
