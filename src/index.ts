@@ -240,4 +240,4 @@ function extractNumber(
   else return [NaN, word];
 }
 
-export { extractNumber };
+export { extractNumber, Analysis, formatType, Criterion };
