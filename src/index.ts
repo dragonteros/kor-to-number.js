@@ -32,8 +32,11 @@ function patternAnalyzer(
   };
 }
 
+const integerAnalyzer = patternAnalyzer(/^[+-]?\d+(?:,\d+)*/, (x) =>
+  Number(x.replace(/,/g, ""))
+);
 const decimalAnalyzer = patternAnalyzer(
-  /^[+-]?(?:\d+(?:,\d+)*[.]?\d*|[.]\d+)/,
+  /^[+-]?(?:\d+(?:,\d+)*[.]\d*|[.]\d+)/,
   (x) => Number(x.replace(/,/g, ""))
 );
 const scientificAnalyzer = patternAnalyzer(
@@ -218,26 +221,46 @@ function getBest(...analyses: (Analysis | null)[]): Analysis | null {
 
 type formatType = "숫자" | "숫자혼용" | "한자어" | "순우리말";
 const analyzerPool = {
-  숫자: unionAnalyzer(decimalAnalyzer, scientificAnalyzer),
+  숫자: unionAnalyzer(integerAnalyzer, decimalAnalyzer, scientificAnalyzer),
   숫자혼용: signAnalyzer(unionAnalyzer(mixAnalyzerLarge, digitsAnalyzerLarge)),
   한자어: signAnalyzer(sinoAnalyzer),
   순우리말: nativeAnalyzer,
 };
 
-type Criterion = (analysis: Analysis) => boolean;
 function extractNumber(
   word: string,
-  format: formatType[] = ["숫자", "숫자혼용", "한자어", "순우리말"],
-  criterion?: Criterion
+  format: formatType[] = ["숫자", "숫자혼용", "한자어", "순우리말"]
 ): [number, string] {
   word = word.trim();
-  criterion = criterion || ((_) => true);
   const analyzer = unionAnalyzer(
     ...format.map((key) => analyzerPool[key]).filter((x) => x)
   );
-  let best = getBest(...analyzer(word).filter(criterion));
+  const analyses = analyzer(word);
+  const best = getBest(...analyses);
   if (best) return [best.parsed, best.rest.trim()];
   else return [NaN, word];
 }
 
-export { extractNumber, Analysis, formatType, Criterion };
+type Mapper<T> = (analysis: Analysis) => T | null;
+function extractAndProcessNumber<T>(
+  word: string,
+  mapper: Mapper<T>,
+  format: formatType[] = ["숫자", "숫자혼용", "한자어", "순우리말"],
+): T | null {
+  word = word.trim();
+  const analyzer = unionAnalyzer(
+    ...format.map((key) => analyzerPool[key]).filter((x) => x)
+  );
+  const analyses = analyzer(word);
+  const mapped = analyses.map(mapper);
+
+  let best: number | null = null;
+  for (let i = 0; i < analyses.length; i++) {
+    if (mapped[i] === null) continue;
+    else if (best === null) best = i;
+    else if (analyses[best].rest.length > analyses[i].rest.length) best = i;
+  }
+  return best !== null ? mapped[best] : null;
+}
+
+export { extractNumber, Analysis, formatType, extractAndProcessNumber, Mapper };

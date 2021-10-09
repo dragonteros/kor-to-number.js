@@ -27,12 +27,17 @@ extractNumber('백한 마리');  // [101, '마리']
 ```
 
 ## API
-### `extractNumber(word: string, format?: string[]): [number, string]`
+### `extractNumber(word: string, format?: formatType[]): [number, string]`
 문자열의 앞부분에서 한자어 수사, 고유어 수사, 숫자 등이 포함된 부분을 떼어냅니다.
+
 반환값은 해석된 수 및 나머지 부분으로 이루어진 길이 2의 배열입니다.
 
+해석에 실패한 경우 반환값의 첫번째 요소는 `NaN`이 되고 두번째 요소는 입력 문자열이 됩니다.
+
 `format` 배열로 사용할 형식을 지정할 수 있습니다.
-`format` 인수를 비워두는 경우 모든 형식을 다 사용합니다.
+`format` 인수를 비워두는 경우 모든 형식을 전부 사용합니다.
+
+#### `type formatType = "숫자" | "숫자혼용" | "한자어" | "순우리말"`
 지원되는 형식은 다음과 같습니다.
 + `"숫자"`
   * 쉼표로 구분된 인도-아라비아 숫자
@@ -54,6 +59,23 @@ extractNumber('백한 마리');  // [101, '마리']
 
 한자어 수사에 부호(`+`, `-`)를 표시하려면 '플러스' 또는 '마이너스'를 앞에 붙입니다.
 - 예: 플러스 만 원, 마이너스 삼십 도
+
+### `extractAndProcessNumber<T>(word: string, mapper: Mapper<T>, format?: formatType[]): T | null`
+문자열의 앞부분에서 한자어 수사, 고유어 수사, 숫자 등이 포함된 부분과 나머지 부분으로 분리하여 가공합니다.
+
+분석이 성공하면 분석 중간 결과 중 남은 문자열이 가장 짧은 것을 최종 분석으로 채택하고, 그것을 `mapper`로 가공한 결과를 반환합니다.
+
+분석에 실패한 경우는 `null`이 반환됩니다. 
+
+#### `type Mapper<T> = (analysis: Analysis) => T | null`
+분석 도중에 중간 결과를 보고 가공하거나 기각할 수 있습니다.
+
+가공한 결과는 이 분석이 최종적으로 채택될 경우 반환값으로 사용됩니다.
+
+이 분석을 기각하려면 `null`을 반환합니다. 기각된 분석은 최종 분석으로 채택되지 않습니다.
+
+#### `type Analysis = { consumed: string; parsed: number; rest: string }`
+분석 중간 결과입니다. `consumed`는 지금까지 분석한 문자열, `parsed`는 분석 결과, `rest`는 남은 문자열입니다.
 
 ## 라이센스
 이 라이브러리는 MIT 라이센스 아래 자유롭게 배포 가능합니다.

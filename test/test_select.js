@@ -1,15 +1,21 @@
 const assert = require("assert");
-const { extractNumber } = require("../dist/kor-to-number.js");
+const {
+  extractNumber,
+  extractAndProcessNumber,
+} = require("../dist/kor-to-number.js");
 
 function assertIncludes(original, allowed, expected) {
-  const format =  ["숫자", "숫자혼용", "한자어", "순우리말"]
-  function criterion(analysis) {
-    if (/(^|\s)$/.test(analysis.consumed)) return true;
+  function mapper(analysis) {
     const rest = analysis.rest;
-    if (!rest) return true;
-    return allowed.includes(rest.split(" ")[0]);
+    const result = [analysis.parsed, analysis.rest.trim()];
+    if (/(^|\s)$/.test(analysis.consumed)) return result;
+    if (!rest) return result;
+    return allowed.includes(rest.split(" ")[0]) ? result : null;
   }
-  assert.deepStrictEqual(extractNumber(original, format, criterion), expected);
+  assert.deepStrictEqual(
+    extractAndProcessNumber(original, mapper),
+    expected
+  );
 }
 
 function assertFormat(original, format, expected) {
@@ -23,15 +29,15 @@ describe("선별", function () {
     assertIncludes("영을", particles, [0, "을"]);
     assertIncludes("1234를", particles, [1234, "를"]);
     assertIncludes("천이백삼십사를", particles, [1234, "를"]);
-    assertIncludes("1234km", particles, [NaN, "1234km"]);
+    assertIncludes("1234km", particles, null);
     assertIncludes("1234 km", particles, [1234, "km"]);
-    assertIncludes("1234개", particles, [NaN, "1234개"]);
+    assertIncludes("1234개", particles, null);
     assertIncludes("1234 개", particles, [1234, "개"]);
-    assertIncludes("천이백삼십개", particles, [NaN, "천이백삼십개"]);
+    assertIncludes("천이백삼십개", particles, null);
     assertIncludes("천이백삼십 개", particles, [1230, "개"]);
     assertIncludes("한 개", particles, [1, "개"]);
     assertIncludes("한 개 더", particles, [1, "개 더"]);
-    assertIncludes("한개", particles, [NaN, "한개"]);
+    assertIncludes("한개", particles, null);
     assertIncludes("일만 개", particles, [10000, "개"]);
     assertIncludes("일만 한개", particles, [10000, "한개"]);
     assertIncludes("하나가", particles, [1, "가"]);
