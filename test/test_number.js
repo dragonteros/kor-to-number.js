@@ -1,5 +1,5 @@
-const assert = require("assert");
-const { extractNumber } = require("../dist/kor-to-number.js");
+import assert from "assert";
+import { extractNumber } from "kor-to-number";
 
 function assertNumber(original, expected) {
   assert.deepStrictEqual(extractNumber(original), expected);

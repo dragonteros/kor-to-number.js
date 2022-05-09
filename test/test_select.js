@@ -1,8 +1,8 @@
-const assert = require("assert");
-const {
+import assert from "assert";
+import {
   extractNumber,
   extractAndProcessNumber,
-} = require("../dist/kor-to-number.js");
+} from "kor-to-number";
 
 function assertIncludes(original, allowed, expected) {
   function mapper(analysis) {
